@@ -283,6 +283,40 @@ truth_t gr_generic_is_neg_one(gr_srcptr x, gr_ctx_t ctx)
     return eq;
 }
 
+truth_t gr_generic_is_integer(gr_srcptr x, gr_ctx_t ctx)
+{
+    fmpz_t t;
+    int status;
+
+    fmpz_init(t);
+    status = gr_get_fmpz(t, x, ctx);
+    fmpz_clear(t);
+
+    if (status == GR_SUCCESS)
+        return T_TRUE;
+    else if (status & GR_DOMAIN)
+        return T_FALSE;
+    else
+        return T_UNKNOWN;
+}
+
+truth_t gr_generic_is_rational(gr_srcptr x, gr_ctx_t ctx)
+{
+    fmpq_t t;
+    int status;
+
+    fmpq_init(t);
+    status = gr_get_fmpq(t, x, ctx);
+    fmpq_clear(t);
+
+    if (status == GR_SUCCESS)
+        return T_TRUE;
+    else if (status & GR_DOMAIN)
+        return T_FALSE;
+    else
+        return T_UNKNOWN;
+}
+
 int gr_generic_neg_one(gr_ptr res, gr_ctx_t ctx)
 {
     int status;
@@ -2833,6 +2867,8 @@ const gr_method_tab_input _gr_generic_methods[] =
     {GR_METHOD_IS_ZERO,                 (gr_funcptr) gr_generic_is_zero},
     {GR_METHOD_IS_ONE,                  (gr_funcptr) gr_generic_is_one},
     {GR_METHOD_IS_NEG_ONE,              (gr_funcptr) gr_generic_is_neg_one},
+    {GR_METHOD_IS_INTEGER,              (gr_funcptr) gr_generic_is_integer},
+    {GR_METHOD_IS_RATIONAL,             (gr_funcptr) gr_generic_is_rational},
 
     {GR_METHOD_EQUAL,                   (gr_funcptr) gr_generic_equal},
 
