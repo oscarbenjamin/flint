@@ -3178,14 +3178,8 @@ static int
 gr_test_sqrt(gr_ctx_t R, flint_rand_t state, int test_flags)
 {
     int status = GR_SUCCESS;
-    int status_sqr_x = GR_SUCCESS;
-    int status_set_y = GR_SUCCESS;
-    int status_sqrt = GR_SUCCESS;
-    int status_sqr_y2 = GR_SUCCESS;
     gr_ptr x, y, y2;
     int perfect;
-    int alias;
-    truth_t is_square = T_UNKNOWN;
     char * fail_str = "";
 
     GR_TMP_INIT3(x, y, y2, R);
@@ -3196,25 +3190,19 @@ gr_test_sqrt(gr_ctx_t R, flint_rand_t state, int test_flags)
     perfect = n_randint(state, 2);
 
     if (perfect)
-    {
-        status_sqr_x = gr_sqr(x, x, R);
-        status |= status_sqr_x;
-    }
+        status |= gr_sqr(x, x, R);
 
-    alias = n_randint(state, 2);
-    if (alias)
+    if (n_randint(state, 2))
     {
-        status_set_y = gr_set(y, x, R);
-        status_sqrt = gr_sqrt(y, y, R);
+        status |= gr_set(y, x, R);
+        status |= gr_sqrt(y, y, R);
     }
     else
     {
-        status_sqrt = gr_sqrt(y, x, R);
+        status |= gr_sqrt(y, x, R);
     }
-    status |= status_set_y | status_sqrt;
 
-    status_sqr_y2 = gr_sqr(y2, y, R);
-    status |= status_sqr_y2;
+    status |= gr_sqr(y2, y, R);
 
     if (status == GR_SUCCESS && gr_equal(y2, x, R) == T_FALSE)
     {
@@ -3228,14 +3216,10 @@ gr_test_sqrt(gr_ctx_t R, flint_rand_t state, int test_flags)
         status = GR_TEST_FAIL;
     }
 
-    if (perfect)
+    if (status == GR_SUCCESS && perfect && gr_is_square(x, R) == T_FALSE)
     {
-        is_square = gr_is_square(x, R);
-        if (status == GR_SUCCESS && is_square == T_FALSE)
-        {
-            fail_str = "is_square(x) returns T_FALSE but input is a perfect square\n";
-            status = GR_TEST_FAIL;
-        }
+        fail_str = "is_square(x) returns T_FALSE but input is a perfect square\n";
+        status = GR_TEST_FAIL;
     }
 
     if ((test_flags & GR_TEST_ALWAYS_ABLE) && (status & GR_UNABLE))
@@ -3245,13 +3229,6 @@ gr_test_sqrt(gr_ctx_t R, flint_rand_t state, int test_flags)
     {
         flint_printf("FAIL: sqrt\n");
         flint_printf("%s\n", fail_str);
-        flint_printf("perfect = %d, alias = %d\n", perfect, alias);
-        flint_printf("status = %d\n", status);
-        flint_printf("status_sqr_x = %d\n", status_sqr_x);
-        flint_printf("status_set_y = %d\n", status_set_y);
-        flint_printf("status_sqrt = %d\n", status_sqrt);
-        flint_printf("status_sqr_y2 = %d\n", status_sqr_y2);
-        flint_printf("is_square = %{truth}\n", is_square);
         flint_printf("R = "); gr_ctx_println(R);
         flint_printf("x = \n"); gr_println(x, R);
         flint_printf("y = \n"); gr_println(y, R);
