@@ -18,6 +18,7 @@ FLINT_DLL extern gr_static_method_table _ca_methods;
 TEST_FUNCTION_START(gr_mpoly_ring, state)
 {
     slong iter;
+    int status;
 
     for (iter = 0; iter < 30 * flint_test_multiplier(); iter++)
     {
@@ -52,7 +53,15 @@ TEST_FUNCTION_START(gr_mpoly_ring, state)
         {
             const char * vars[] = { "mv1", "mv2", "mv3", "mv4" };
 
-            GR_MUST_SUCCEED(gr_ctx_set_gen_names(ctx, vars));
+            status = gr_ctx_set_gen_names(ctx, vars);
+            if (status != GR_SUCCESS)
+            {
+                flint_printf("gr_mpoly_ring: gr_ctx_set_gen_names failed "
+                             "at iteration %wd with status %d\n", iter, status);
+                flint_printf("coefficient context: "); gr_ctx_println(cctx);
+                flint_printf("polynomial context: "); gr_ctx_println(ctx);
+            }
+            GR_MUST_SUCCEED(status);
 
         }
         gr_vec_clear(vec, cctx);
@@ -65,13 +74,29 @@ TEST_FUNCTION_START(gr_mpoly_ring, state)
 
             gr_mpoly_init(A, ctx);
 
-            GR_MUST_SUCCEED(gr_mpoly_set_ui(A, 1, ctx));
+            status = gr_mpoly_set_ui(A, 1, ctx);
+            if (status != GR_SUCCESS)
+            {
+                flint_printf("gr_mpoly_ring: gr_mpoly_set_ui failed "
+                             "at iteration %wd with status %d\n", iter, status);
+                flint_printf("coefficient context: "); gr_ctx_println(cctx);
+                flint_printf("polynomial context: "); gr_ctx_println(ctx);
+            }
+            GR_MUST_SUCCEED(status);
             if (gr_mpoly_is_scalar(A, ctx) != T_TRUE)
                 flint_abort();
 
             if (GR_MPOLY_MCTX(ctx)->nvars > 0)
             {
-                GR_MUST_SUCCEED(gr_mpoly_gen(A, 0, ctx));
+                status = gr_mpoly_gen(A, 0, ctx);
+                if (status != GR_SUCCESS)
+                {
+                    flint_printf("gr_mpoly_ring: gr_mpoly_gen failed "
+                                 "at iteration %wd with status %d\n", iter, status);
+                    flint_printf("coefficient context: "); gr_ctx_println(cctx);
+                    flint_printf("polynomial context: "); gr_ctx_println(ctx);
+                }
+                GR_MUST_SUCCEED(status);
                 if (A->length > 0 && gr_mpoly_is_scalar(A, ctx) != T_FALSE)
                     flint_abort();
             }
