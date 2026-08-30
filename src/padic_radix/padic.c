@@ -1777,10 +1777,13 @@ padic_radix_is_neg_one(const padic_radix_t x, gr_ctx_t ctx)
 truth_t
 padic_radix_is_integer(const padic_radix_t x, gr_ctx_t ctx)
 {
+    if (x->u.size != 0 && x->v < 0)
+        return T_FALSE;
+
     if (x->N != PADIC_RADIX_EXACT)
         return T_UNKNOWN;
 
-    return x->v >= 0 ? T_TRUE : T_FALSE;
+    return T_TRUE;
 }
 
 truth_t
