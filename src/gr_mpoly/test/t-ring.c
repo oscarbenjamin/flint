@@ -60,6 +60,25 @@ TEST_FUNCTION_START(gr_mpoly_ring, state)
         /* gr_ctx_println(ctx); */
         gr_test_ring(ctx, reps, 0 * GR_TEST_VERBOSE);
 
+        {
+            gr_mpoly_t A;
+
+            gr_mpoly_init(A, ctx);
+
+            GR_MUST_SUCCEED(gr_mpoly_set_ui(A, 1, ctx));
+            if (gr_mpoly_is_scalar(A, ctx) != T_TRUE)
+                flint_abort();
+
+            if (GR_MPOLY_MCTX(ctx)->nvars > 0)
+            {
+                GR_MUST_SUCCEED(gr_mpoly_gen(A, 0, ctx));
+                if (A->length > 0 && gr_mpoly_is_scalar(A, ctx) != T_FALSE)
+                    flint_abort();
+            }
+
+            gr_mpoly_clear(A, ctx);
+        }
+
         gr_mpoly_ctx_clear(ctx);
         gr_ctx_clear(cctx);
     }
