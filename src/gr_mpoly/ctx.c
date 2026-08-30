@@ -355,6 +355,8 @@ gr_method_tab_input _gr_mpoly_methods_input[] =
     {GR_METHOD_ONE,         (gr_funcptr) gr_mpoly_one},
     {GR_METHOD_IS_ZERO,     (gr_funcptr) gr_mpoly_is_zero},
     {GR_METHOD_IS_ONE,      (gr_funcptr) gr_mpoly_is_one},
+    {GR_METHOD_IS_INTEGER,  (gr_funcptr) gr_mpoly_is_integer},
+    {GR_METHOD_IS_RATIONAL, (gr_funcptr) gr_mpoly_is_rational},
     {GR_METHOD_EQUAL,       (gr_funcptr) gr_mpoly_equal},
     {GR_METHOD_SET,         (gr_funcptr) gr_mpoly_set},
     {GR_METHOD_SET_OTHER,   (gr_funcptr) gr_mpoly_set_other},
