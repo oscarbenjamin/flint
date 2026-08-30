@@ -200,6 +200,8 @@ nfloat_is_zero(nfloat_srcptr x, gr_ctx_t FLINT_UNUSED(ctx))
 
 truth_t nfloat_is_one(nfloat_srcptr x, gr_ctx_t ctx);
 truth_t nfloat_is_neg_one(nfloat_srcptr x, gr_ctx_t ctx);
+truth_t nfloat_is_integer(nfloat_srcptr x, gr_ctx_t ctx);
+truth_t nfloat_is_rational(nfloat_srcptr x, gr_ctx_t ctx);
 
 int nfloat_set_ui(nfloat_ptr res, ulong x, gr_ctx_t ctx);
 int nfloat_set_si(nfloat_ptr res, slong x, gr_ctx_t ctx);
