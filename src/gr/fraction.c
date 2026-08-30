@@ -507,6 +507,68 @@ _gr_fraction_is_neg_one(gr_srcptr x, gr_fraction_ctx_t ctx)
     }
 }
 
+static truth_t
+_gr_fraction_is_integer(gr_srcptr x, gr_fraction_ctx_t ctx)
+{
+    gr_srcptr a = NUMER(x, ctx), b = DENOM(x, ctx);
+    gr_ctx_struct * domain_ctx = DOMAIN(ctx);
+    gr_ptr q;
+    truth_t res;
+    int status;
+
+    if (gr_is_zero(b, domain_ctx) != T_FALSE)
+        return T_UNKNOWN;
+
+    if (gr_ctx_is_finite_characteristic(domain_ctx) != T_FALSE)
+        return T_UNKNOWN;
+
+    GR_TMP_INIT(q, domain_ctx);
+    status = gr_divexact(q, a, b, domain_ctx);
+
+    if (status == GR_SUCCESS)
+        res = gr_is_integer(q, domain_ctx);
+    else if (status & GR_DOMAIN)
+        res = T_FALSE;
+    else
+        res = T_UNKNOWN;
+
+    GR_TMP_CLEAR(q, domain_ctx);
+    return res;
+}
+
+static truth_t
+_gr_fraction_is_rational(gr_srcptr x, gr_fraction_ctx_t ctx)
+{
+    gr_srcptr a = NUMER(x, ctx), b = DENOM(x, ctx);
+    gr_ctx_struct * domain_ctx = DOMAIN(ctx);
+    truth_t a_is_rational, b_is_rational, res;
+    gr_ptr q;
+    int status;
+
+    if (gr_is_zero(b, domain_ctx) != T_FALSE)
+        return T_UNKNOWN;
+
+    if (gr_ctx_is_finite_characteristic(domain_ctx) != T_FALSE)
+        return T_UNKNOWN;
+
+    a_is_rational = gr_is_rational(a, domain_ctx);
+    b_is_rational = gr_is_rational(b, domain_ctx);
+
+    if (a_is_rational == T_TRUE && b_is_rational == T_TRUE)
+        return T_TRUE;
+
+    GR_TMP_INIT(q, domain_ctx);
+    status = gr_divexact(q, a, b, domain_ctx);
+
+    if (status == GR_SUCCESS)
+        res = gr_is_rational(q, domain_ctx);
+    else
+        res = T_UNKNOWN;
+
+    GR_TMP_CLEAR(q, domain_ctx);
+    return res;
+}
+
 
 static int
 _gr_fraction_neg(gr_ptr res, gr_srcptr x, gr_fraction_ctx_t ctx)
@@ -1167,6 +1229,8 @@ gr_method_tab_input _gr_fraction_methods_input[] =
     {GR_METHOD_IS_ZERO,         (gr_funcptr) _gr_fraction_is_zero},
     {GR_METHOD_IS_ONE,          (gr_funcptr) _gr_fraction_is_one},
     {GR_METHOD_IS_NEG_ONE,      (gr_funcptr) _gr_fraction_is_neg_one},
+    {GR_METHOD_IS_INTEGER,      (gr_funcptr) _gr_fraction_is_integer},
+    {GR_METHOD_IS_RATIONAL,     (gr_funcptr) _gr_fraction_is_rational},
     {GR_METHOD_EQUAL,           (gr_funcptr) _gr_fraction_equal},
     {GR_METHOD_SET,             (gr_funcptr) _gr_fraction_set},
     {GR_METHOD_SET_SI,          (gr_funcptr) _gr_fraction_set_si},
@@ -1248,4 +1312,3 @@ gr_ctx_init_gr_fraction(gr_ctx_t ctx, gr_ctx_t domain, int flags)
         _gr_fraction_methods_initialized = 1;
     }
 }
-
