@@ -53,15 +53,7 @@ TEST_FUNCTION_START(gr_mpoly_ring, state)
         {
             const char * vars[] = { "mv1", "mv2", "mv3", "mv4" };
 
-            status = gr_ctx_set_gen_names(ctx, vars);
-            if (status != GR_SUCCESS)
-            {
-                flint_printf("gr_mpoly_ring: gr_ctx_set_gen_names failed "
-                             "at iteration %wd with status %d\n", iter, status);
-                flint_printf("coefficient context: "); gr_ctx_println(cctx);
-                flint_printf("polynomial context: "); gr_ctx_println(ctx);
-            }
-            GR_MUST_SUCCEED(status);
+            GR_MUST_SUCCEED(gr_ctx_set_gen_names(ctx, vars));
 
         }
         gr_vec_clear(vec, cctx);
@@ -75,29 +67,14 @@ TEST_FUNCTION_START(gr_mpoly_ring, state)
             gr_mpoly_init(A, ctx);
 
             status = gr_mpoly_set_ui(A, 1, ctx);
-            if (status != GR_SUCCESS)
-            {
-                flint_printf("gr_mpoly_ring: gr_mpoly_set_ui failed "
-                             "at iteration %wd with status %d\n", iter, status);
-                flint_printf("coefficient context: "); gr_ctx_println(cctx);
-                flint_printf("polynomial context: "); gr_ctx_println(ctx);
-            }
-            GR_MUST_SUCCEED(status);
-            if (gr_mpoly_is_scalar(A, ctx) != T_TRUE)
+            if (status == GR_SUCCESS && gr_mpoly_is_scalar(A, ctx) != T_TRUE)
                 flint_abort();
 
             if (GR_MPOLY_MCTX(ctx)->nvars > 0)
             {
                 status = gr_mpoly_gen(A, 0, ctx);
-                if (status != GR_SUCCESS)
-                {
-                    flint_printf("gr_mpoly_ring: gr_mpoly_gen failed "
-                                 "at iteration %wd with status %d\n", iter, status);
-                    flint_printf("coefficient context: "); gr_ctx_println(cctx);
-                    flint_printf("polynomial context: "); gr_ctx_println(ctx);
-                }
-                GR_MUST_SUCCEED(status);
-                if (A->length > 0 && gr_mpoly_is_scalar(A, ctx) != T_FALSE)
+                if (status == GR_SUCCESS && A->length > 0 &&
+                    gr_mpoly_is_scalar(A, ctx) != T_FALSE)
                     flint_abort();
             }
 
