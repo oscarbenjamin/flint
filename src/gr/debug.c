@@ -125,6 +125,12 @@ _gr_debug_ctx_is_threadsafe(gr_ctx_t ctx)
     return gr_ctx_is_threadsafe(GR_DEBUG_ELEM_CTX(ctx));
 }
 
+static truth_t
+_gr_debug_ctx_is_finite_characteristic(gr_ctx_t ctx)
+{
+    return gr_ctx_is_finite_characteristic(GR_DEBUG_ELEM_CTX(ctx));
+}
+
 static void
 _gr_debug_init(gr_ptr x, gr_ctx_t ctx)
 {
@@ -491,6 +497,7 @@ gr_method_tab_input _gr_debug_methods_input[] =
     {GR_METHOD_CTX_IS_COMMUTATIVE_RING, (gr_funcptr) gr_generic_ctx_predicate_true},
     {GR_METHOD_CTX_IS_EXACT,     (gr_funcptr) gr_generic_ctx_predicate_true},
     {GR_METHOD_CTX_IS_THREADSAFE,  (gr_funcptr) _gr_debug_ctx_is_threadsafe},
+    {GR_METHOD_CTX_IS_FINITE_CHARACTERISTIC, (gr_funcptr) _gr_debug_ctx_is_finite_characteristic},
     {GR_METHOD_INIT,            (gr_funcptr) _gr_debug_init},
     {GR_METHOD_CLEAR,           (gr_funcptr) _gr_debug_clear},
     {GR_METHOD_SWAP,            (gr_funcptr) _gr_debug_swap},

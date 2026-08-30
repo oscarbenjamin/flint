@@ -51,6 +51,9 @@ gr_mpoly_is_rational(const gr_mpoly_t A, gr_mpoly_ctx_t ctx)
         }
     }
 
+    if (gr_ctx_is_finite_characteristic(cctx) != T_FALSE)
+        return T_UNKNOWN;
+
     if (cindex >= 0)
         res = truth_and(res, gr_is_rational(
             GR_ENTRY(A->coeffs, cindex, cctx->sizeof_elem), cctx));
