@@ -512,28 +512,11 @@ _gr_fraction_is_integer(gr_srcptr x, gr_fraction_ctx_t ctx)
 {
     gr_srcptr a = NUMER(x, ctx), b = DENOM(x, ctx);
     gr_ctx_struct * domain_ctx = DOMAIN(ctx);
-    gr_ptr q;
-    truth_t res;
-    int status;
 
-    if (gr_is_zero(b, domain_ctx) != T_FALSE)
-        return T_UNKNOWN;
+    if (gr_is_one(b, domain_ctx) == T_TRUE)
+        return gr_is_integer(a, domain_ctx);
 
-    if (gr_ctx_is_finite_characteristic(domain_ctx) != T_FALSE)
-        return T_UNKNOWN;
-
-    GR_TMP_INIT(q, domain_ctx);
-    status = gr_divexact(q, a, b, domain_ctx);
-
-    if (status == GR_SUCCESS)
-        res = gr_is_integer(q, domain_ctx);
-    else if (status & GR_DOMAIN)
-        res = T_FALSE;
-    else
-        res = T_UNKNOWN;
-
-    GR_TMP_CLEAR(q, domain_ctx);
-    return res;
+    return T_UNKNOWN;
 }
 
 static truth_t
@@ -541,32 +524,17 @@ _gr_fraction_is_rational(gr_srcptr x, gr_fraction_ctx_t ctx)
 {
     gr_srcptr a = NUMER(x, ctx), b = DENOM(x, ctx);
     gr_ctx_struct * domain_ctx = DOMAIN(ctx);
-    truth_t a_is_rational, b_is_rational, res;
-    gr_ptr q;
-    int status;
+    truth_t a_is_rational;
 
     if (gr_is_zero(b, domain_ctx) != T_FALSE)
         return T_UNKNOWN;
 
-    if (gr_ctx_is_finite_characteristic(domain_ctx) != T_FALSE)
+    a_is_rational = gr_is_rational(a, domain_ctx);
+
+    if (a_is_rational == T_UNKNOWN)
         return T_UNKNOWN;
 
-    a_is_rational = gr_is_rational(a, domain_ctx);
-    b_is_rational = gr_is_rational(b, domain_ctx);
-
-    if (a_is_rational == T_TRUE && b_is_rational == T_TRUE)
-        return T_TRUE;
-
-    GR_TMP_INIT(q, domain_ctx);
-    status = gr_divexact(q, a, b, domain_ctx);
-
-    if (status == GR_SUCCESS)
-        res = gr_is_rational(q, domain_ctx);
-    else
-        res = T_UNKNOWN;
-
-    GR_TMP_CLEAR(q, domain_ctx);
-    return res;
+    return gr_is_rational(b, domain_ctx) == T_TRUE ? a_is_rational : T_UNKNOWN;
 }
 
 
