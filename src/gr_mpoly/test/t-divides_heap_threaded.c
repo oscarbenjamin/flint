@@ -20,7 +20,7 @@ TEST_FUNCTION_START(gr_mpoly_divides_heap_threaded, state)
     gr_ctx_init_nmod(ctx1, 17);
 
     /* Check that the threaded quotient matches the serial heap quotient */
-    for (i = 0; i < 1000 * flint_test_multiplier(); i++)
+    for (i = 0; i < 100 * 1000 * flint_test_multiplier(); i++)
     {
         gr_ctx_t cctx;
         gr_ctx_t debug_base_ctx;
