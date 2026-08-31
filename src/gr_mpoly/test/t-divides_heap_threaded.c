@@ -30,7 +30,7 @@ TEST_FUNCTION_START(gr_mpoly_divides_heap_threaded, state)
         slong lenf, leng;
         flint_bitcnt_t exp_bits;
         int status, aliasing;
-        int big = (n_randint(state, 10) == 0);
+        int big = (n_randint(state, 2) == 0);
 
         switch (n_randint(state, 5))
         {
@@ -64,7 +64,7 @@ TEST_FUNCTION_START(gr_mpoly_divides_heap_threaded, state)
                 break;
         }
 
-        gr_mpoly_ctx_init_rand(ctx, state, cctx, 4);
+        gr_mpoly_ctx_init_rand(ctx, state, cctx, big ? 20 : 4);
 
         gr_mpoly_init(f, ctx);
         gr_mpoly_init(g, ctx);
@@ -72,7 +72,7 @@ TEST_FUNCTION_START(gr_mpoly_divides_heap_threaded, state)
         gr_mpoly_init(q1, ctx);
         gr_mpoly_init(q2, ctx);
 
-        flint_set_num_threads(1 + n_randint(state, 4));
+        flint_set_num_threads(big ? 2 + n_randint(state, 3) : 1 + n_randint(state, 4));
 
         lenf = n_randint(state, big ? 80 : 20) + 1;
         leng = n_randint(state, big ? 30 : 10) + 1;
